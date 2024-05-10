@@ -1,3 +1,4 @@
+import { JobItem } from "../lib/types";
 import JobList from "./JobList";
 import Pagination from "./PaginationControls";
 import ResultsCount from "./ResultsCount";

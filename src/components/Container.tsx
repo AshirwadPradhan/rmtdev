@@ -1,3 +1,4 @@
+import { JobItem } from "../lib/types";
 import JobItemContent from "./JobItemContent";
 import Sidebar from "./Sidebar";
 

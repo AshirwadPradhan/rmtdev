@@ -3,6 +3,7 @@ import Background from "./Background";
 import Container from "./Container";
 import Footer from "./Footer";
 import Header from "./Header";
+import { JobItem } from "../lib/types";
 
 function App() {
   const [jobItems, setJobItems] = useState<JobItem[]>([]);
@@ -26,7 +27,7 @@ function App() {
     <>
       <Background />
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <Container jobItems={jobItems}/>
+      <Container jobItems={jobItems} />
       <Footer />
     </>
   );
