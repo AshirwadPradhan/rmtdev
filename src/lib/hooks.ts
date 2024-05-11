@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { JobItem } from "./types";
 
 export function useJobItems(searchTerm: string): {
-  jobItems: JobItem[];
+  jobItemsSliced: JobItem[];
   loading: boolean;
 } {
   const [jobItems, setJobItems] = useState<JobItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const jobItemsSliced = jobItems.slice(0, 7);
 
   useEffect(() => {
     if (searchTerm === "") return;
@@ -24,5 +26,5 @@ export function useJobItems(searchTerm: string): {
     fetchData();
   }, [searchTerm]);
 
-  return { jobItems, loading };
+  return { jobItemsSliced, loading };
 }
