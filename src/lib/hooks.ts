@@ -2,30 +2,71 @@ import { useEffect, useState } from "react";
 import { JobContent, JobItem } from "./types";
 import { useQuery } from "@tanstack/react-query";
 
-export function useJobItems(searchTerm: string): {
+// export function useJobItems(searchTerm: string): {
+//   jobItems: JobItem[];
+//   loading: boolean;
+// } {
+//   const [jobItems, setJobItems] = useState<JobItem[]>([]);
+//   const [loading, setLoading] = useState<boolean>(false);
+
+//   useEffect(() => {
+//     if (searchTerm === "") return;
+//     setLoading(true);
+
+//     const fetchData = async () => {
+//       const resp = await fetch(
+//         "https://bytegrad.com/course-assets/projects/rmtdev/api/data?search=" +
+//           searchTerm
+//       );
+//       const data = await resp.json();
+//       setLoading(false);
+//       setJobItems(data.jobItems);
+//     };
+//     fetchData();
+//   }, [searchTerm]);
+
+//   return { jobItems, loading };
+// }
+
+type JobItemsApiResponse = {
+  public: boolean;
+  sorted: boolean;
   jobItems: JobItem[];
+};
+
+const fetchJobItems = async (
+  searchTerm: string
+): Promise<JobItemsApiResponse> => {
+  const resp = await fetch(
+    "https://bytegrad.com/course-assets/projects/rmtdev/api/data?search=" +
+      searchTerm
+  );
+  if (!resp.ok) {
+    const errorData = await resp.json();
+    throw new Error(errorData.error);
+  }
+  const data = await resp.json();
+  return data;
+};
+
+export function useJobItems(searchTerm: string): {
+  jobItems: JobItem[] | undefined;
   loading: boolean;
 } {
-  const [jobItems, setJobItems] = useState<JobItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (searchTerm === "") return;
-    setLoading(true);
-
-    const fetchData = async () => {
-      const resp = await fetch(
-        "https://bytegrad.com/course-assets/projects/rmtdev/api/data?search=" +
-          searchTerm
-      );
-      const data = await resp.json();
-      setLoading(false);
-      setJobItems(data.jobItems);
-    };
-    fetchData();
-  }, [searchTerm]);
-
-  return { jobItems, loading };
+  const { data, isInitialLoading } = useQuery(
+    ["job-items", searchTerm],
+    () => (searchTerm ? fetchJobItems(searchTerm) : null),
+    {
+      staleTime: 1000 * 60,
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!searchTerm,
+      onError: (error) => {
+        console.error(error);
+      },
+    }
+  );
+  return { jobItems: data?.jobItems, loading: isInitialLoading };
 }
 
 export function useActiveId() {
