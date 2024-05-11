@@ -78,6 +78,10 @@ const fetchJobItem = async (id: string): Promise<JobItemApiResponse> => {
   const resp = await fetch(
     "https://bytegrad.com/course-assets/projects/rmtdev/api/data/" + id
   );
+  if (!resp.ok) {
+    const errorData = await resp.json();
+    throw new Error(errorData.error);
+  }
   const data = await resp.json();
   return data;
 };
