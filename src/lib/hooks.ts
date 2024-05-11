@@ -49,17 +49,20 @@ export function useActiveId() {
 
 export function useJobItem(id: string | null) {
   const [jobItem, setJobItem] = useState<JobContent | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!id) return;
+    setLoading(true);
     const fetchData = async () => {
       const resp = await fetch(
         "https://bytegrad.com/course-assets/projects/rmtdev/api/data/" + id
       );
       const data = await resp.json();
       setJobItem(data.jobItem);
+      setLoading(false);
     };
     fetchData();
   }, [id]);
-  return jobItem;
+  return [jobItem, loading] as const;
 }

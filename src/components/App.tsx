@@ -18,7 +18,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { jobItemsSliced, loading } = useJobItems(searchTerm);
   const activeId = useActiveId();
-  const jobItem = useJobItem(activeId);
+  const [jobItem, jobloading] = useJobItem(activeId);
 
   return (
     <>
@@ -39,7 +39,7 @@ function App() {
           <JobList jobItems={jobItemsSliced} loading={loading} />
           <Pagination />
         </Sidebar>
-        <JobItemContent jobItem={jobItem} />
+        <JobItemContent jobItem={jobItem} jobloading={jobloading} />
       </Container>
       <Footer />
     </>
