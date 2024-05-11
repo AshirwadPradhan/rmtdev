@@ -6,7 +6,7 @@ export function useJobItems(searchTerm: string): {
   loading: boolean;
 } {
   const [jobItems, setJobItems] = useState<JobItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const jobItemsSliced = jobItems.slice(0, 7);
 
@@ -27,4 +27,22 @@ export function useJobItems(searchTerm: string): {
   }, [searchTerm]);
 
   return { jobItemsSliced, loading };
+}
+
+export function useActiveId() {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setActiveId(window.location.hash.slice(1));
+    };
+    handleHashChange();
+
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
+  return activeId;
 }
