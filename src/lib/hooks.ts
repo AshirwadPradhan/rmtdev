@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { JobContent, JobItem } from "./types";
 import { useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 // export function useJobItems(searchTerm: string): {
 //   jobItems: JobItem[];
@@ -43,7 +44,7 @@ const fetchJobItems = async (
   );
   if (!resp.ok) {
     const errorData = await resp.json();
-    throw new Error(errorData.error);
+    throw new Error(errorData.description);
   }
   const data = await resp.json();
   return data;
@@ -61,8 +62,8 @@ export function useJobItems(searchTerm: string): {
       refetchOnWindowFocus: false,
       retry: false,
       enabled: !!searchTerm,
-      onError: (error) => {
-        console.error(error);
+      onError: (error: Error) => {
+        toast.error(error.message);
       },
     }
   );
@@ -118,7 +119,7 @@ const fetchJobItem = async (id: string): Promise<JobItemApiResponse> => {
   );
   if (!resp.ok) {
     const errorData = await resp.json();
-    throw new Error(errorData.error);
+    throw new Error(errorData.description);
   }
   const data = await resp.json();
   return data;
@@ -133,8 +134,8 @@ export function useJobItem(id: string | null) {
       refetchOnWindowFocus: false,
       retry: false,
       enabled: !!id,
-      onError: (error) => {
-        console.error(error);
+      onError: (error: Error) => {
+        toast.error(error.message);
       },
     }
   );
