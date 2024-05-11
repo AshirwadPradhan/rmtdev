@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { JobContent, JobItem } from "./types";
+import { JobItem } from "./types";
+import { useQuery } from "@tanstack/react-query";
 
 export function useJobItems(searchTerm: string): {
   jobItemsSliced: JobItem[];
@@ -48,24 +49,47 @@ export function useActiveId() {
   return activeId;
 }
 
-export function useJobItem(id: string | null) {
-  const [jobItem, setJobItem] = useState<JobContent | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+// export function useJobItem(id: string | null) {
+//   const [jobItem, setJobItem] = useState<JobContent | null>(null);
+//   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!id) return;
-    setLoading(true);
-    const fetchData = async () => {
+//   useEffect(() => {
+//     if (!id) return;
+//     setLoading(true);
+//     const fetchData = async () => {
+//       const resp = await fetch(
+//         "https://bytegrad.com/course-assets/projects/rmtdev/api/data/" + id
+//       );
+//       const data = await resp.json();
+//       setJobItem(data.jobItem);
+//       setLoading(false);
+//     };
+//     fetchData();
+//   }, [id]);
+//   return [jobItem, loading] as const;
+// }
+
+export function useJobItem(id: string | null) {
+  const { data, isLoading } = useQuery(
+    ["jobItem", id],
+    async () => {
       const resp = await fetch(
         "https://bytegrad.com/course-assets/projects/rmtdev/api/data/" + id
       );
       const data = await resp.json();
-      setJobItem(data.jobItem);
-      setLoading(false);
-    };
-    fetchData();
-  }, [id]);
-  return [jobItem, loading] as const;
+      return data;
+    },
+    {
+      staleTime: 1000 * 60,
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!id,
+      onError: (error) => {
+        console.error(error);
+      },
+    }
+  );
+  return { jobItem: data?.jobItem, isLoading };
 }
 
 export function useDebounce<T>(value: T, delay: number) {

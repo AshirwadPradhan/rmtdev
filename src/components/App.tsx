@@ -27,7 +27,7 @@ function App() {
   const { jobItemsSliced, loading, totalJobCount } =
     useJobItems(debouncedSearchTerm);
   const activeId = useActiveId();
-  const [jobItem, jobloading] = useJobItem(activeId);
+  const { jobItem, isLoading: jobloading } = useJobItem(activeId);
 
   return (
     <>
