@@ -3,14 +3,11 @@ import { JobContent, JobItem } from "./types";
 import { useQuery } from "@tanstack/react-query";
 
 export function useJobItems(searchTerm: string): {
-  jobItemsSliced: JobItem[];
+  jobItems: JobItem[];
   loading: boolean;
-  totalJobCount: number;
 } {
   const [jobItems, setJobItems] = useState<JobItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const jobItemsSliced = jobItems.slice(0, 7);
 
   useEffect(() => {
     if (searchTerm === "") return;
@@ -28,7 +25,7 @@ export function useJobItems(searchTerm: string): {
     fetchData();
   }, [searchTerm]);
 
-  return { jobItemsSliced, loading, totalJobCount: jobItems.length };
+  return { jobItems, loading };
 }
 
 export function useActiveId() {

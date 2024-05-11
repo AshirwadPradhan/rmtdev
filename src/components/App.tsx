@@ -21,11 +21,12 @@ import {
 
 function App() {
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
 
-  const { jobItemsSliced, loading, totalJobCount } =
-    useJobItems(debouncedSearchTerm);
+  const { jobItems, loading } = useJobItems(debouncedSearchTerm);
+  const jobItemsSliced = jobItems.slice(0, 7);
+  const totalJobCount = jobItems.length;
+
   const activeId = useActiveId();
   const { jobItem, isLoading: jobloading } = useJobItem(activeId);
 
