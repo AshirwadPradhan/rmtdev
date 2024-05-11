@@ -46,3 +46,20 @@ export function useActiveId() {
   }, []);
   return activeId;
 }
+
+export function useJobItem(id: string | null) {
+  const [jobItem, setJobItem] = useState<JobItem | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+    const fetchData = async () => {
+      const resp = await fetch(
+        "https://bytegrad.com/course-assets/projects/rmtdev/api/data" + id
+      );
+      const data = await resp.json();
+      setJobItem(data.jobItem);
+    };
+    fetchData();
+  }, [id]);
+  return jobItem;
+}
