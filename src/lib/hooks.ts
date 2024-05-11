@@ -67,3 +67,15 @@ export function useJobItem(id: string | null) {
   }, [id]);
   return [jobItem, loading] as const;
 }
+
+export function useDebounce<T>(value: T, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => setDebouncedValue(value), delay);
+
+    return () => clearTimeout(timerId);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
