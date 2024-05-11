@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { JobItem } from "./types";
+import { JobContent, JobItem } from "./types";
 import { useQuery } from "@tanstack/react-query";
 
 export function useJobItems(searchTerm: string): {
@@ -69,16 +69,23 @@ export function useActiveId() {
 //   return [jobItem, loading] as const;
 // }
 
+type JobItemApiResponse = {
+  public: boolean;
+  jobItem: JobContent;
+};
+
+const fetchJobItem = async (id: string): Promise<JobItemApiResponse> => {
+  const resp = await fetch(
+    "https://bytegrad.com/course-assets/projects/rmtdev/api/data/" + id
+  );
+  const data = await resp.json();
+  return data;
+};
+
 export function useJobItem(id: string | null) {
-  const { data, isLoading } = useQuery(
+  const { data, isInitialLoading } = useQuery(
     ["jobItem", id],
-    async () => {
-      const resp = await fetch(
-        "https://bytegrad.com/course-assets/projects/rmtdev/api/data/" + id
-      );
-      const data = await resp.json();
-      return data;
-    },
+    () => (id ? fetchJobItem(id) : null),
     {
       staleTime: 1000 * 60,
       refetchOnWindowFocus: false,
@@ -89,7 +96,7 @@ export function useJobItem(id: string | null) {
       },
     }
   );
-  return { jobItem: data?.jobItem, isLoading };
+  return { jobItem: data?.jobItem, isLoading: isInitialLoading };
 }
 
 export function useDebounce<T>(value: T, delay: number) {

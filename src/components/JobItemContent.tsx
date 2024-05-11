@@ -6,7 +6,7 @@ export default function JobItemContent({
   jobItem,
   jobloading,
 }: {
-  jobItem: JobContent | null;
+  jobItem: JobContent | undefined;
   jobloading: boolean;
 }) {
   if (jobloading) {
