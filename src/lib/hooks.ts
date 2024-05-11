@@ -4,6 +4,7 @@ import { JobContent, JobItem } from "./types";
 export function useJobItems(searchTerm: string): {
   jobItemsSliced: JobItem[];
   loading: boolean;
+  totalJobCount: number;
 } {
   const [jobItems, setJobItems] = useState<JobItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,7 +27,7 @@ export function useJobItems(searchTerm: string): {
     fetchData();
   }, [searchTerm]);
 
-  return { jobItemsSliced, loading };
+  return { jobItemsSliced, loading, totalJobCount: jobItems.length };
 }
 
 export function useActiveId() {
