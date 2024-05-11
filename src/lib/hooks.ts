@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { JobItem } from "./types";
+import { JobContent, JobItem } from "./types";
 
 export function useJobItems(searchTerm: string): {
   jobItemsSliced: JobItem[];
@@ -48,13 +48,13 @@ export function useActiveId() {
 }
 
 export function useJobItem(id: string | null) {
-  const [jobItem, setJobItem] = useState<JobItem | null>(null);
+  const [jobItem, setJobItem] = useState<JobContent | null>(null);
 
   useEffect(() => {
     if (!id) return;
     const fetchData = async () => {
       const resp = await fetch(
-        "https://bytegrad.com/course-assets/projects/rmtdev/api/data" + id
+        "https://bytegrad.com/course-assets/projects/rmtdev/api/data/" + id
       );
       const data = await resp.json();
       setJobItem(data.jobItem);
