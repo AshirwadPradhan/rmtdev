@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { JobContent, JobItem } from "./types";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 // export function useJobItems(searchTerm: string): {
@@ -50,7 +50,7 @@ const fetchJobItems = async (
   return data;
 };
 
-export function useJobItems(searchTerm: string): {
+export function useSearchQuery(searchTerm: string): {
   jobItems: JobItem[];
   loading: boolean;
 } {
@@ -164,4 +164,30 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   }, [key, value]);
 
   return [value, setValue] as const;
+}
+
+export function useJobItems(ids: string[]): {
+  jobItems: JobItem[];
+  loading: boolean;
+} {
+  const results = useQueries({
+    queries: ids.map((id) => ({
+      queryKey: ["job-item", id],
+      queryFn: () => fetchJobItem(id),
+      staleTime: 1000 * 60,
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!id,
+      onError: (error: Error) => {
+        toast.error(error.message);
+      },
+    })),
+  });
+  const jobItems = results
+    .map((result) => result.data?.jobItem)
+    .filter((jobItem) => jobItem !== undefined) as JobItem[];
+
+  const isLoading = results.some((result) => result.isLoading);
+
+  return { jobItems, loading: isLoading };
 }

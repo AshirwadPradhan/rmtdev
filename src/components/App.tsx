@@ -16,7 +16,7 @@ import {
   useActiveId,
   useDebounce,
   useJobItem,
-  useJobItems,
+  useSearchQuery,
 } from "../lib/hooks";
 import { Toaster } from "react-hot-toast";
 import { PageDirection, SortBy } from "../lib/types";
@@ -28,7 +28,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [sortBy, setSortBy] = useState<SortBy>("relevant");
 
-  const { jobItems, loading } = useJobItems(debouncedSearchTerm);
+  const { jobItems, loading } = useSearchQuery(debouncedSearchTerm);
   const jobItemsSorted = [...jobItems].sort((a, b) => {
     if (sortBy === "relevant") {
       return b.relevanceScore - a.relevanceScore;
