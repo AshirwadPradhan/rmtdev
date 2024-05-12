@@ -24,12 +24,22 @@ function App() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 300);
 
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const { jobItems, loading } = useJobItems(debouncedSearchTerm);
   const jobItemsSliced = jobItems?.slice(0, 7);
   const totalJobCount = jobItems?.length;
 
   const activeId = useActiveId();
   const { jobItem, isLoading: jobloading } = useJobItem(activeId);
+
+  const handleChangePage = (direction: "next" | "prev") => {
+    if (direction === "prev") {
+      setCurrentPage((prev) => prev - 1);
+    } else if (direction === "next") {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
 
   return (
     <>
@@ -48,7 +58,7 @@ function App() {
             <Sorting />
           </SidebarTop>
           <JobList jobItems={jobItemsSliced} loading={loading} />
-          <Pagination />
+          <Pagination onClick={handleChangePage} currentPage={currentPage} />
         </Sidebar>
         <JobItemContent jobItem={jobItem} jobloading={jobloading} />
       </Container>
