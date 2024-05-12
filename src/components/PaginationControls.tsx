@@ -42,7 +42,10 @@ function PageControl({
     return (
       <button
         className="pagination__button pagination__button--previous"
-        onClick={() => onClick(direction)}
+        onClick={(e) => {
+          onClick(direction);
+          e.currentTarget.blur();
+        }}
       >
         <ArrowLeftIcon />
         {`Page ${currentPage - 1}`}
@@ -54,7 +57,10 @@ function PageControl({
     return (
       <button
         className="pagination__button pagination__button--next"
-        onClick={() => onClick("next")}
+        onClick={(e) => {
+          onClick("next");
+          e.currentTarget.blur();
+        }}
       >
         {`Page ${currentPage + 1}`}
         <ArrowRightIcon />
