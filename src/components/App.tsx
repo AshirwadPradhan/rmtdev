@@ -27,8 +27,9 @@ function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { jobItems, loading } = useJobItems(debouncedSearchTerm);
-  const jobItemsSliced = jobItems?.slice(0, 7);
-  const totalJobCount = jobItems?.length;
+  const jobItemsSliced = jobItems.slice((currentPage - 1) * 7, currentPage * 7);
+  const totalJobCount = jobItems.length || 0;
+  const totalNoOfPages = Math.ceil(totalJobCount / 7);
 
   const activeId = useActiveId();
   const { jobItem, isLoading: jobloading } = useJobItem(activeId);
@@ -58,7 +59,11 @@ function App() {
             <Sorting />
           </SidebarTop>
           <JobList jobItems={jobItemsSliced} loading={loading} />
-          <Pagination onClick={handleChangePage} currentPage={currentPage} />
+          <Pagination
+            onClick={handleChangePage}
+            currentPage={currentPage}
+            totalPages={totalNoOfPages}
+          />
         </Sidebar>
         <JobItemContent jobItem={jobItem} jobloading={jobloading} />
       </Container>

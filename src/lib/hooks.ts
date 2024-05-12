@@ -51,7 +51,7 @@ const fetchJobItems = async (
 };
 
 export function useJobItems(searchTerm: string): {
-  jobItems: JobItem[] | undefined;
+  jobItems: JobItem[];
   loading: boolean;
 } {
   const { data, isInitialLoading } = useQuery(
@@ -67,7 +67,7 @@ export function useJobItems(searchTerm: string): {
       },
     }
   );
-  return { jobItems: data?.jobItems, loading: isInitialLoading };
+  return { jobItems: data?.jobItems || [], loading: isInitialLoading };
 }
 
 export function useActiveId() {
