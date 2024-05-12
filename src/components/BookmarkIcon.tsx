@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { BookmarksContext } from "../context/BookmarksContextProvider";
 
 export default function BookmarkIcon({ id }: { id: string }) {
-  const { bookmarkIds, handleToggleBookmark } = useContext(BookmarksContext);
+  const { bookmarkIds, handleToggleBookmark } = useContext(BookmarksContext)!;
   return (
     <button
       className="bookmark-btn"

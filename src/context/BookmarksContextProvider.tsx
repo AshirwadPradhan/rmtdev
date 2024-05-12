@@ -1,17 +1,23 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext } from "react";
+import { useLocalStorage } from "../lib/hooks";
 
-export const BookmarksContext = createContext({});
+type BookmarksContextType = {
+  bookmarkIds: string[];
+  handleToggleBookmark: (id: string) => void;
+};
+
+export const BookmarksContext = createContext<BookmarksContextType | null>(
+  null
+);
 
 export default function BookmarksContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const bookarksFromLocalStorage = JSON.parse(
-    localStorage.getItem("bookmarks") || "[]"
-  );
-  const [bookmarkIds, setBookmarkIds] = useState<string[]>(
-    bookarksFromLocalStorage
+  const [bookmarkIds, setBookmarkIds] = useLocalStorage<string[]>(
+    "bookmarks",
+    []
   );
 
   const handleToggleBookmark = (id: string) => {
@@ -21,10 +27,6 @@ export default function BookmarksContextProvider({
       setBookmarkIds((prev) => [...prev, id]);
     }
   };
-
-  useEffect(() => {
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarkIds));
-  }, [bookmarkIds]);
 
   return (
     <BookmarksContext.Provider value={{ bookmarkIds, handleToggleBookmark }}>
