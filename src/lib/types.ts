@@ -20,3 +20,4 @@ export type JobContent = JobItem & {
 };
 
 export type SortBy = "relevant" | "recent";
+export type PageDirection = "next" | "prev";

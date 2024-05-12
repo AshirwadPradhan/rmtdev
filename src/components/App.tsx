@@ -19,7 +19,7 @@ import {
   useJobItems,
 } from "../lib/hooks";
 import { Toaster } from "react-hot-toast";
-import { SortBy } from "../lib/types";
+import { PageDirection, SortBy } from "../lib/types";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -29,7 +29,7 @@ function App() {
   const [sortBy, setSortBy] = useState<SortBy>("relevant");
 
   const { jobItems, loading } = useJobItems(debouncedSearchTerm);
-  const jobItemsSorted = jobItems.sort((a, b) => {
+  const jobItemsSorted = [...jobItems].sort((a, b) => {
     if (sortBy === "relevant") {
       return b.relevanceScore - a.relevanceScore;
     } else if (sortBy === "recent") {
@@ -47,7 +47,7 @@ function App() {
   const activeId = useActiveId();
   const { jobItem, isLoading: jobloading } = useJobItem(activeId);
 
-  const handleChangePage = (direction: "next" | "prev") => {
+  const handleChangePage = (direction: PageDirection) => {
     if (direction === "prev") {
       setCurrentPage((prev) => prev - 1);
     } else if (direction === "next") {
@@ -56,6 +56,7 @@ function App() {
   };
 
   const handleChangeSortBy = (newSortBy: SortBy) => {
+    setCurrentPage(1);
     setSortBy(newSortBy);
   };
 
